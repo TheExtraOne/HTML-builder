@@ -14,14 +14,16 @@ const { stdin } = process;
 const output = fs.createWriteStream(path.join(__dirname, 'usertext.txt'));
 
 stdin.setEncoding('utf8');
+
 stdin.on('data', (data) => {
-    if (data === 'exit') {
+    if (data.substr(0,4) === 'exit') {
         process.exit();
     }
-    console.log(data == 'exit');
     output.write(data);
     console.log('You add something important, please, continue');
 });
 
 process.on('exit', () => console.log('Have a nice day'));
+
+
 
