@@ -17,6 +17,7 @@ stdin.setEncoding('utf8');
 
 stdin.on('data', (data) => {
     if (data.trim() === 'exit') {
+        console.log('Have a nice day')
         process.exit();
     }
 
@@ -24,7 +25,11 @@ stdin.on('data', (data) => {
     console.log('You add something important, please, continue');
 });
 
-process.on('exit', () => console.log('Have a nice day'));
+process.on('SIGINT', () => {
+    console.log('Have a nice day');
+    process.exit();
+});
+
 
 
 
