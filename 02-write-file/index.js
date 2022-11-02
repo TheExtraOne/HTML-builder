@@ -16,9 +16,10 @@ const output = fs.createWriteStream(path.join(__dirname, 'usertext.txt'));
 stdin.setEncoding('utf8');
 
 stdin.on('data', (data) => {
-    if (data.substr(0,4) === 'exit') {
+    if (data.substr(0, (data.length / 2) + 1) === 'exit') {
         process.exit();
     }
+
     output.write(data);
     console.log('You add something important, please, continue');
 });
