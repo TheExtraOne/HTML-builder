@@ -15,17 +15,10 @@ fs.promises.readdir(path.join(__dirname, 'secret-folder'), {withFileTypes: true}
                     console.log(error);
                 }
                 else {
-                    console.log(`Stats object for: ${item.name}`);
-                    console.log(stats.size);
+                    console.log(`${item.name.slice(0,item.name.indexOf('.'))} - ${path.extname(item.name)} - ${stats.size}`);
                 }
             });
         }
-
-        let result = [];
-        filteredFiles.forEach(item => {
-            result.push( { file: `${item.name.slice(0,item.name.indexOf('.'))} - ${path.extname(item.name)}` } );
-        });
-        console.log(result);
     })
     // If promise is rejected
     .catch(err => {
