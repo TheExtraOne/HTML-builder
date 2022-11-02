@@ -15,9 +15,9 @@ fs.promises.readdir(path.join(__dirname, 'styles'), {withFileTypes: true})
                 return;
             }
 
-            fs.unlink(path.join(path.join(__dirname, 'project-dist', 'bundle.css'), err => {
+            fs.unlink(path.join(__dirname, 'project-dist', 'bundle.css'), err => {
                 if(err) throw err; // не удалось удалить файл
-            }))
+            })
         });
 
         fs.writeFile(
