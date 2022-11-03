@@ -7,6 +7,7 @@ fsPromises.mkdir( path.join(__dirname, 'project-dist'), {recursive: true} )
     .then(function () {
         console.log('Сreated directory');
         let data = '';
+        let count = 0;
         const stream = fs.createReadStream(path.join(__dirname, 'template.html'), 'utf-8');
         stream.on('data', chunk => data += chunk);
         stream.on('end', () => {
@@ -27,15 +28,18 @@ fsPromises.mkdir( path.join(__dirname, 'project-dist'), {recursive: true} )
                             newstream.on('end', () => {
                                 let index = compNamesArrShort.indexOf(fileName);
                                 data = data.replace(compNamesArr[index],tags);
-                                console.log(data);
-                                fs.writeFile(
-                                    path.join(__dirname, 'project-dist', 'index.html'),
-                                    data,
-                                    (err) => {
-                                        if (err) throw err;
-                                        //console.log('Файл был создан');
-                                    }
-                                );
+                                count++;
+                                //console.log(data);
+                                if (count >= 3) {
+                                    fs.writeFile(
+                                        path.join(__dirname, 'project-dist', 'index.html'),
+                                        data,
+                                        (err) => {
+                                            if (err) throw err;
+                                            //console.log('Файл был создан');
+                                        }
+                                    );
+                                }
                             })
                             newstream.on('error', error => console.log('Error', error.message));
                         }
@@ -71,7 +75,7 @@ fsPromises.readdir(path.join(__dirname, 'styles'), {withFileTypes: true})
             '',
             (err) => {
                 if (err) throw err;
-                console.log('Файл был создан');
+                //console.log('Файл был создан');
             }
         );
 
@@ -87,7 +91,7 @@ fsPromises.readdir(path.join(__dirname, 'styles'), {withFileTypes: true})
                         }
                     );
                 });
-                stream.on('end', () => {console.log('ok');});
+                //stream.on('end', () => {console.log('ok');});
                 stream.on('error', error => console.log('Error', error.message));
             }
         }
@@ -98,88 +102,36 @@ fsPromises.readdir(path.join(__dirname, 'styles'), {withFileTypes: true})
     })
 
 fsPromises.mkdir( path.join(__dirname, 'project-dist', 'assets'), {recursive: true} )
-.then(recCopy('assets', 'project-dist'))
-    /*.then(function() {
-        fs.promises.readdir(path.join(__dirname, 'project-dist', 'assets'))
-        .then(filenames => {
-            for (let file of filenames) {
-                fs.unlink(path.join(__dirname, 'project-dist', 'assets', file), err => {
-                    if(err) throw err; // не удалось удалить файл
-                });
-            }
-        })*/
-    
-        /*fs.promises.readdir(path.join(__dirname, 'assets'), {withFileTypes: true})
-    
-        // If promise resolved and
-        // data are fetched
-        .then(filenames => {
-            for (let file of filenames) {
-                if (file.isFile()) {
-                    fs.writeFile(
-                        path.join(__dirname, 'project-dist', 'assets', file),
-                        '',
-                        (err) => {
-                            if (err) throw err;
-                        }
-                    );
-        
-                    fs.copyFile(path.join(__dirname, 'assets',file), path.join(__dirname, 'project-dist', 'assets', file), (err) => {
-                        if (err) {
-                            console.log("Error Found:", err);
-                        }
-                        else {
-                            console.log('Copied successfully');
-                        }
-                    });
-                } else {
-                    fs.promises.readdir(path.join(__dirname, 'assets', file.name), {withFileTypes: true})
-                            .then(filenames => {
-                                console.log(filenames);
-                            })
-                }
-            }
-        })
-        // If promise is rejected
-        .catch(err => {
-            console.log(err)
-        })
-        
-    }).catch(function() {
-        console.log('failed to create directory');
-    });*/
+    .then(recCopy('assets', 'project-dist'))
 
-    function recCopy (from, dest) {
-        fs.promises.readdir(path.join(__dirname, from), {withFileTypes: true})
-        
-        // If promise resolved and
-        // data are fetched
-        .then(filenames => {
-            for (let file of filenames) {
-                if (file.isFile()) {
-                    fs.writeFile(
-                        path.join(__dirname, dest, from, file),
-                        '',
-                        (err) => {
-                            if (err) throw err;
-                        }
-                    );
-        
-                    fs.copyFile(path.join(__dirname, from,file), path.join(__dirname, dest, from, file, file), (err) => {
-                        if (err) {
-                            console.log("Error Found:", err);
-                        }
-                        else {
-                            console.log('Copied successfully');
-                        }
-                    });
-                } else {
-                    fsPromises.mkdir( path.join(__dirname, dest, from, file.name), {recursive: true} )
-                        .then(function() {
-                            fs.promises.readdir(path.join(__dirname, from, file.name), {withFileTypes: true})
-        
-                            // If promise resolved and
-                            // data are fetched
+function recCopy (from, dest) {
+fs.promises.readdir(path.join(__dirname, from), {withFileTypes: true})
+
+// If promise resolved and
+// data are fetched
+    .then(filenames => {
+        for (let file of filenames) {
+            if (file.isFile()) {
+                fs.writeFile(
+                    path.join(__dirname, dest, from, file),
+                    '',
+                    (err) => {
+                        if (err) throw err;
+                    }
+                );
+
+                fs.copyFile(path.join(__dirname, from,file), path.join(__dirname, dest, from, file, file), (err) => {
+                    if (err) {
+                        console.log("Error Found:", err);
+                    }
+                    else {
+                        console.log('Copied successfully');
+                    }
+                });
+            } else {
+                fsPromises.mkdir( path.join(__dirname, dest, from, file.name), {recursive: true} )
+                    .then(function() {
+                        fs.promises.readdir(path.join(__dirname, from, file.name), {withFileTypes: true})
                             .then(filenames => {
                                 for (let item of filenames) {
                                         fs.writeFile(
@@ -200,16 +152,14 @@ fsPromises.mkdir( path.join(__dirname, 'project-dist', 'assets'), {recursive: tr
                                         });
                                 }
                             })
-                            // If promise is rejected
                             .catch(err => {
                                 console.log(err)
                             })
-                        })
-                }
+                    })
             }
-        })
-        // If promise is rejected
-        .catch(err => {
-            console.log(err)
-        })
-    }
+        }
+    })
+    .catch(err => {
+        console.log(err)
+    })
+}
