@@ -98,7 +98,8 @@ fsPromises.readdir(path.join(__dirname, 'styles'), {withFileTypes: true})
     })
 
 fsPromises.mkdir( path.join(__dirname, 'project-dist', 'assets'), {recursive: true} )
-    .then(function() {
+.then(recCopy('assets', 'project-dist'))
+    /*.then(function() {
         fs.promises.readdir(path.join(__dirname, 'project-dist', 'assets'))
         .then(filenames => {
             for (let file of filenames) {
@@ -106,7 +107,7 @@ fsPromises.mkdir( path.join(__dirname, 'project-dist', 'assets'), {recursive: tr
                     if(err) throw err; // не удалось удалить файл
                 });
             }
-        })
+        })*/
     
         /*fs.promises.readdir(path.join(__dirname, 'assets'), {withFileTypes: true})
     
@@ -142,11 +143,11 @@ fsPromises.mkdir( path.join(__dirname, 'project-dist', 'assets'), {recursive: tr
         // If promise is rejected
         .catch(err => {
             console.log(err)
-        })*/
-        recCopy('assets', 'project-dist');
+        })
+        
     }).catch(function() {
         console.log('failed to create directory');
-    });
+    });*/
 
     function recCopy (from, dest) {
         fs.promises.readdir(path.join(__dirname, from), {withFileTypes: true})
