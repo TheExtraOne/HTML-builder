@@ -30,7 +30,7 @@ fsPromises.mkdir( path.join(__dirname, 'project-dist'), {recursive: true} )
                                 data = data.replace(compNamesArr[index],tags);
                                 count++;
                                 //console.log(data);
-                                if (count >= 3) {
+                                if (count === compNamesArr.length) {
                                     fs.writeFile(
                                         path.join(__dirname, 'project-dist', 'index.html'),
                                         data,
